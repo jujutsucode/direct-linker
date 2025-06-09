@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="ru">
+    <head>
+        <meta charset="UTF-8">
+        <title>Direct Linker</title>
+    </head>
+    <body>
+        <h1>Upload your file..</h1>
+        <form id="upload-form" enctype="multipart/form-data">
+            <input type="file" name="file" required>
+            <button type="submit">Upload</button>
+        </form>
+
+        <div id="result"></div>
+
+        <script>
+            document.getElementById('upload-form').addEventListener('submit', async function (e) {
+                e.preventDefault();
+                const formData = new FormData(this);
+
+                const response = await fetch('/upload', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const data = await response.json();
+
+                const resultDiv = document.getElementById('result');
+                if (data.url) {
+                    resultDiv.innerHTML = `
+                        <p>File is uploaded</p>
+                        <p>${data.url}</p>
+                        <a href="${data.url}" target="_blank">Download</a>
+                    `
+                } else {
+                    resultDiv.innerHTML = `<p>Error file upload</p>`
+                }
+            })
+        </script>
+    </body>
+</html>
