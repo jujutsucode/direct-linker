@@ -1,4 +1,4 @@
-# 🤖 Direct Linker 
+# 🗂 Direct Linker 
 ## Overview
 Direct Linker is a FastApi Server for upload files and get direct links to download.
 
