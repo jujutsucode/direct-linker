@@ -1,4 +1,5 @@
-from fastapi import FastAPI, File, UploadFile, Form, HTTPException, Request
+from starlette.types import Scope
+from fastapi import FastAPI, File, UploadFile, Form, HTTPException, Request, Response
 from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
