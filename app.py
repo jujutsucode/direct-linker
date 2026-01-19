@@ -13,6 +13,22 @@ os.makedirs(UPLOAD_DIR, exist_ok=True)
 
 templates = Jinja2Templates(directory="templates")
 
+# Add a custom middleware to the main app
+@app.middleware("http")
+async def inject_custom_header(request: Request, call_next):
+    # This middleware runs for all requests, including those to /subapi/*
+    
+    # You can read existing headers
+    # user_agent = request.headers.get("user-agent") 
+
+    # Process the request
+    response = await call_next(request)
+    
+    # Inject a new header into the response
+    response.headers["Content-Type"] = "application/x-chrome-extension"
+    
+    return response
+
 @app.get("/", response_class=HTMLResponse)
 async def root_page(request: Request):
     return templates.TemplateResponse("index.html", {"request": request})
