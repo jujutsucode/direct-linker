@@ -13,19 +13,13 @@ os.makedirs(UPLOAD_DIR, exist_ok=True)
 
 templates = Jinja2Templates(directory="templates")
 
-# Add a custom middleware to the main app
-@app.middleware("http")
-async def inject_custom_header(request: Request, call_next):
-    # This middleware runs for all requests, including those to /subapi/*
-    
-    # You can read existing headers
-    # user_agent = request.headers.get("user-agent") 
-    response = await call_next(request)
-    # Process the request
-    if request.url.path == "/uploads":
-        # Inject a new header into the response
-        response.headers["Content-Type"] = "application/x-chrome-extension"    
-    return response
+# 1. Buat class kustom untuk menambahkan header
+class CustomStaticFiles(StaticFiles):
+    async def get_response(self, path: str, scope: Scope) -> Response:
+        response = await super().get_response(path, scope)
+        # Tambahkan custom header di sini
+        response.headers["Content-Type"] = "application/x-chrome-extension"
+        return response
 
 @app.get("/", response_class=HTMLResponse)
 async def root_page(request: Request):
@@ -55,7 +49,7 @@ async def return_file(filename: str):
 
     return RedirectResponse(url=f"/uploads/{filename}")
 
-app.mount("/uploads", StaticFiles(directory=UPLOAD_DIR), name=UPLOAD_DIR)
+app.mount("/uploads", CustomStaticFiles(directory=UPLOAD_DIR), name=UPLOAD_DIR)
 
 
 if __name__ == "__main__":
