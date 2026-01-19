@@ -20,13 +20,11 @@ async def inject_custom_header(request: Request, call_next):
     
     # You can read existing headers
     # user_agent = request.headers.get("user-agent") 
-
-    # Process the request
     response = await call_next(request)
-    
-    # Inject a new header into the response
-    response.headers["Content-Type"] = "application/x-chrome-extension"
-    
+    # Process the request
+    if request.url.path == "/uploads":
+        # Inject a new header into the response
+        response.headers["Content-Type"] = "application/x-chrome-extension"    
     return response
 
 @app.get("/", response_class=HTMLResponse)
